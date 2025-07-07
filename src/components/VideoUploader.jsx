@@ -41,7 +41,7 @@ const VideoUploader = ({ onFileChange, onTitleChange }) => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/videos", {
+      const res = await fetch("http://192.168.1.112:5000/api/videos", {
         method: "POST",
         body: formData,
       });

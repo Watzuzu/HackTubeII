@@ -6,7 +6,7 @@ const ListVideo = ({ search }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/videos")
+    fetch("http://192.168.1.112:5000/api/videos")
       .then((res) => res.json())
       .then((data) => {
         console.log("Réponse API vidéos :", data); // <--- ici
@@ -35,7 +35,7 @@ const ListVideo = ({ search }) => {
           <img
             src={
               video.thumbnailUrl
-                ? `http://localhost:5000${video.thumbnailUrl}`
+                ? `http://192.168.1.112:5000${video.thumbnailUrl}`
                 : "/default-thumbnail.png"
             }
             alt={video.title}
