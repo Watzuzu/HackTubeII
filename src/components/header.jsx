@@ -118,6 +118,14 @@ const Header = ({ onSearch }) => {
                                     </Link>
                                 </li>
                             )}
+                            {isAdmin && (
+                                <li>
+                                    <Link to="/dashboard" className="justify-between">
+                                    Dashboard
+                                    <span className="badge badge-success">ADMIN</span>
+                                    </Link>
+                                </li>
+                            )}
                         </ul>
                     </div>
                     <label className="flex cursor-pointer gap-2 items-center">

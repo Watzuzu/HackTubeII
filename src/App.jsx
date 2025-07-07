@@ -7,6 +7,7 @@ import VideoPage from './pages/video';
 import Account from './pages/account';
 import Login from './pages/login';
 import Settings from './pages/settings';
+import Dashboard from './pages/dashboard';
 
 import './App.css';
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/account" element={<Account />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </>
     </Router>
