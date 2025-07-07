@@ -1,19 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/Hack.png';
-import Account from '../assets/account.png';
+import AccountDefault from '../assets/account.png';
 
 const Header = ({ onSearch }) => {
-    // Initialisation depuis le localStorage
     const [isDark, setIsDark] = useState(() => {
         const saved = localStorage.getItem('theme');
         return saved ? saved === 'dark' : false;
     });
-
     const [search, setSearch] = useState("");
+    const [profilePic, setProfilePic] = useState(AccountDefault);
+
+    // Récupère la photo de profil de l'utilisateur connecté
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const res = await fetch("http://192.168.1.112:5000/api/me", {
+                    credentials: "include",
+                });
+                const data = await res.json();
+                if (data.success && data.user && data.user.profilePic) {
+                    setProfilePic(
+                        data.user.profilePic.startsWith("/uploads/")
+                            ? `http://192.168.1.112:5000${data.user.profilePic}`
+                            : data.user.profilePic
+                    );
+                } else {
+                    setProfilePic(AccountDefault);
+                }
+            } catch {
+                setProfilePic(AccountDefault);
+            }
+        };
+        fetchProfile();
+    }, []);
 
     useEffect(() => {
-        // Appliquer le thème au chargement et sauvegarder le choix
         document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }, [isDark]);
@@ -44,35 +66,40 @@ const Header = ({ onSearch }) => {
                         onChange={handleSearch}
                     />
                     <div className="dropdown dropdown-end">
-                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                        <div className="w-10 rounded-full">
-                        <img
-                            alt="Tailwind CSS Navbar component"
-                            src={Account}
-                            className='bg-gray-300' />
+                        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                            <div className="w-10 rounded-full">
+                                <img
+                                    alt="Photo de profil"
+                                    src={profilePic}
+                                    className='bg-gray-300'
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <ul
-                        tabIndex={0}
-                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                        <li>
-                        <a className="justify-between">
-                            Profile
-                            <span className="badge">Soon</span>
-                        </a>
-                        </li>
-                        <li>
-                            <a>Settings</a>
-                        </li>
-                        <li>
-                            <a>Logout</a>
-                        </li>
-                        <li>
-                            <Link to="/import" className="justify-between">
-                                Import
-                            </Link>
-                        </li>  
-                    </ul>
+                        <ul
+                            tabIndex={0}
+                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                            <li>
+                                <Link to="/account" className="justify-between">
+                                    Profile
+                                    <span className="badge">Soon</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/settings" className="justify-between">
+                                    Settings
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/login" className="justify-between">
+                                    Login
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/import" className="justify-between">
+                                    Import
+                                </Link>
+                            </li>  
+                        </ul>
                     </div>
                     <label className="flex cursor-pointer gap-2 items-center">
                         <svg

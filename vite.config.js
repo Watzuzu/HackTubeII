@@ -7,5 +7,4 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
-  base: '/HackTubeII/', // <-- remplace <ton-repo> par le nom de ton repo GitHub
 });

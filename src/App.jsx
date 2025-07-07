@@ -4,6 +4,9 @@ import Header from './components/header';
 import Main from './pages/main';
 import Import from './pages/import';
 import VideoPage from './pages/video';
+import Account from './pages/account';
+import Login from './pages/login';
+import Settings from './pages/settings';
 
 import './App.css';
 
@@ -15,9 +18,12 @@ function App() {
       <>
         <Header onSearch={setSearch} />
         <Routes>
-          <Route path="/" element={<Main search={search} />} />
-          <Route path="/import" element={<Import />} />
-          <Route path="/video/:id" element={<VideoPage />} />
+            <Route path="/" element={<Main search={search} />} />
+            <Route path="/import" element={<Import />} />
+            <Route path="/video/:id" element={<VideoPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/settings" element={<Settings />} />
         </Routes>
       </>
     </Router>
