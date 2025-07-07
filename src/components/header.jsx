@@ -10,6 +10,8 @@ const Header = ({ onSearch }) => {
     });
     const [search, setSearch] = useState("");
     const [profilePic, setProfilePic] = useState(AccountDefault);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isLogged, setIsLogged] = useState(false);
 
     // Récupère la photo de profil de l'utilisateur connecté
     useEffect(() => {
@@ -19,16 +21,26 @@ const Header = ({ onSearch }) => {
                     credentials: "include",
                 });
                 const data = await res.json();
-                if (data.success && data.user && data.user.profilePic) {
-                    setProfilePic(
-                        data.user.profilePic.startsWith("/uploads/")
-                            ? `http://192.168.1.112:5000${data.user.profilePic}`
-                            : data.user.profilePic
-                    );
+                if (data.success && data.user) {
+                    setIsLogged(true);
+                    setIsAdmin(!!data.user.isAdmin);
+                    if (data.user.profilePic) {
+                        setProfilePic(
+                            data.user.profilePic.startsWith("/uploads/")
+                                ? `http://192.168.1.112:5000${data.user.profilePic}`
+                                : data.user.profilePic
+                        );
+                    } else {
+                        setProfilePic(AccountDefault);
+                    }
                 } else {
+                    setIsLogged(false);
+                    setIsAdmin(false);
                     setProfilePic(AccountDefault);
                 }
             } catch {
+                setIsLogged(false);
+                setIsAdmin(false);
                 setProfilePic(AccountDefault);
             }
         };
@@ -78,27 +90,34 @@ const Header = ({ onSearch }) => {
                         <ul
                             tabIndex={0}
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                            <li>
-                                <Link to="/account" className="justify-between">
-                                    Profile
-                                    <span className="badge">Soon</span>
-                                </Link>
-                            </li>
+                            {isLogged && (
+                                <li>
+                                    <Link to="/account" className="justify-between">
+                                        Profile
+                                    </Link>
+                                </li>
+                            )}
                             <li>
                                 <Link to="/settings" className="justify-between">
                                     Settings
+                                    <span className="badge bg-base-300">Soon</span>
                                 </Link>
                             </li>
-                            <li>
-                                <Link to="/login" className="justify-between">
-                                    Login
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/import" className="justify-between">
-                                    Import
-                                </Link>
-                            </li>  
+                            {!isLogged && (
+                                <li>
+                                    <Link to="/login" className="justify-between">
+                                        Login
+                                    </Link>
+                                </li>
+                            )}
+                            {isAdmin && (
+                                <li>
+                                    <Link to="/import" className="justify-between">
+                                        Import
+                                        <span className="badge badge-success">ADMIN</span>
+                                    </Link>
+                                </li>
+                            )}
                         </ul>
                     </div>
                     <label className="flex cursor-pointer gap-2 items-center">

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import VideoUploader from "../components/VideoUploader";
 
 const Import = () => {
@@ -6,42 +7,32 @@ const Import = () => {
     const [title, setTitle] = useState("");
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const navigate = useNavigate();
 
-    const handleImport = () => {
-        setSuccess(false);
-        setError("");
-        if (!file || !title) {
-            setError("Veuillez sélectionner une vidéo et entrer un titre.");
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            // Créer une miniature
-            const videoElement = document.createElement('video');
-            videoElement.src = e.target.result;
-            videoElement.currentTime = 1;
-            videoElement.onloadeddata = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = videoElement.videoWidth;
-                canvas.height = videoElement.videoHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                const thumbnail = canvas.toDataURL('image/png');
-                // Sauvegarder la vidéo avec la miniature
-                const videos = JSON.parse(localStorage.getItem("videos") || "[]");
-                const id = Date.now();
-                videos.push({
-                    id,
-                    title,
-                    url: e.target.result,
-                    thumbnail,
+    useEffect(() => {
+        const checkAdmin = async () => {
+            try {
+                const res = await fetch("http://192.168.1.112:5000/api/me", {
+                    credentials: "include",
                 });
-                localStorage.setItem("videos", JSON.stringify(videos));
-                setSuccess(true);
-            };
+                const data = await res.json();
+                if (data.success && data.user && data.user.isAdmin) {
+                    setIsAdmin(true);
+                } else {
+                    navigate("/account"); // Redirige si non admin
+                }
+            } catch {
+                navigate("/account");
+            }
+            setLoading(false);
         };
-        reader.readAsDataURL(file);
-    };
+        checkAdmin();
+    }, [navigate]);
+
+
+    if (loading) return <div>Chargement...</div>;
 
     return (
         <div className="flex flex-col items-center justify-center ">

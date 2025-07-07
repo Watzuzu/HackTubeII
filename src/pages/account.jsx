@@ -106,6 +106,11 @@ const Account = () => {
             disabled={uploading}
           />
         </div>
+        {user.isAdmin && (
+          <div className="mb-2">
+            <span className="badge badge-success">Administrateur</span>
+          </div>
+        )}
         <div className="mb-2">
           <span className="font-semibold">Adresse mail :</span> {user.email}
         </div>
