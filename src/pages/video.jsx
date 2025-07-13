@@ -7,7 +7,9 @@ const VideoPage = () => {
   const [video, setVideo] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/videos")
+    fetch("https://hacktube.fr/api/videos", {
+      
+    })
       .then(res => res.json())
       .then(data => {
         const found = data.find(v => v.id === id);
@@ -28,7 +30,7 @@ const VideoPage = () => {
         Fermer
       </button>
       <video
-        src={`http://localhost:5000${video.url}`}
+        src={`https://hacktube.fr${video.url}`}
         controls
         autoPlay
         controlsList="nodownload"

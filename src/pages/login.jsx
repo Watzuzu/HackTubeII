@@ -25,7 +25,7 @@ const Login = () => {
       }
       // Appel API pour créer un compte
       try {
-        const res = await fetch("http://192.168.1.112:5000/api/register", {
+        const res = await fetch("https://hacktube.fr/api/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: form.email, password: form.password }),
@@ -41,11 +41,11 @@ const Login = () => {
     } else {
       // Appel API pour se connecter
       try {
-        const res = await fetch("http://192.168.1.112:5000/api/login", {
+        const res = await fetch("https://hacktube.fr/api/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: form.email, password: form.password }),
-          credentials: "include", // Ajouté ici
+          credentials: "include",
         });
         const data = await res.json();
         setMsg(data.message);

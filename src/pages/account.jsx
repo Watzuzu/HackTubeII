@@ -11,7 +11,7 @@ const Account = () => {
   useEffect(() => {
     const fetchAccount = async () => {
       try {
-        const res = await fetch("http://192.168.1.112:5000/api/me", {
+        const res = await fetch("https://hacktube.fr/api/me", {
           method: "GET",
           credentials: "include",
         });
@@ -38,7 +38,7 @@ const Account = () => {
     formData.append("profilePic", file);
 
     try {
-      const res = await fetch("http://192.168.1.112:5000/api/profile-pic", {
+      const res = await fetch("https://hacktube.fr/api/profile-pic", {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -82,7 +82,7 @@ const Account = () => {
           <img
             src={
               profilePic.startsWith("/uploads/")
-                ? `http://192.168.1.112:5000${profilePic}`
+                ? `https://hacktube.fr${profilePic}`
                 : profilePic
             }
             alt="Photo de profil"
@@ -120,7 +120,7 @@ const Account = () => {
         <button
           className="btn btn-error mt-4"
           onClick={async () => {
-            await fetch("http://192.168.1.112:5000/api/logout", {
+            await fetch("https://hacktube.fr/api/logout", {
               method: "POST",
               credentials: "include",
             });

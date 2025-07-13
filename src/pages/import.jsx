@@ -14,7 +14,7 @@ const Import = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const res = await fetch("http://192.168.1.112:5000/api/me", {
+                const res = await fetch("https://hacktube.fr/api/me", {
                     credentials: "include",
                 });
                 const data = await res.json();
@@ -31,6 +31,47 @@ const Import = () => {
         checkAdmin();
     }, [navigate]);
 
+
+    const handleUploadSuccess = () => {
+        setSuccess(true);
+        setError("");
+    };
+
+    const handleUploadError = (errorMessage) => {
+        setError(errorMessage);
+        setSuccess(false);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!file || !title) {
+            setError("Veuillez remplir tous les champs.");
+            return;
+        }
+        setLoading(true);
+        setError("");
+        setSuccess(false);
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("title", title);
+        try {
+            const res = await fetch("https://hacktube.fr/api/videos", {
+                method: "POST",
+                credentials: "include",
+                body: formData,
+            });
+            const data = await res.json();
+            if (data.success) {
+                handleUploadSuccess();
+            } else {
+                handleUploadError(data.message || "Une erreur est survenue.");
+            }
+        } catch (err) {
+            handleUploadError("Erreur réseau : " + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (loading) return <div>Chargement...</div>;
 

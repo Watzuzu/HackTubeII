@@ -39,24 +39,42 @@ const VideoUploader = ({ onFileChange, onTitleChange }) => {
     formData.append("video", file);
     formData.append("title", title);
 
-    try {
-      setLoading(true);
-      const res = await fetch("http://192.168.1.112:5000/api/videos", {
-        method: "POST",
-        body: formData,
-      });
+    setLoading(true);
+    setProgress(0);
+
+    // Utilise XMLHttpRequest pour suivre la progression réelle
+    const xhr = new window.XMLHttpRequest();
+    xhr.open("POST", "https://hacktube.fr/api/videos", true);
+    xhr.withCredentials = true; // Pour envoyer les cookies de session
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = (event.loaded / event.total) * 100;
+        setProgress(percent);
+      }
+    };
+
+    xhr.onload = () => {
       setLoading(false);
-      if (!res.ok) throw new Error("Erreur lors de l'upload");
-      const data = await res.json();
-      alert("Vidéo uploadée sur le serveur !");
-      setVideoSrc(null);
-      setFile(null);
-      setTitle("");
-      if (onFileChange) onFileChange(data); // callback pour rafraîchir la liste côté parent
-    } catch (err) {
+      setProgress(100);
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const data = JSON.parse(xhr.responseText);
+        alert("Vidéo uploadée sur le serveur !");
+        setVideoSrc(null);
+        setFile(null);
+        setTitle("");
+        if (onFileChange) onFileChange(data);
+      } else {
+        alert("Erreur lors de l'upload : " + xhr.statusText);
+      }
+    };
+
+    xhr.onerror = () => {
       setLoading(false);
-      alert("Erreur backend : " + err.message);
-    }
+      alert("Erreur réseau lors de l'upload.");
+    };
+
+    xhr.send(formData);
   };
 
   const handleVideoUpload = (event) => {

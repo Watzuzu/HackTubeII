@@ -17,7 +17,7 @@ const Header = ({ onSearch }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const res = await fetch("http://192.168.1.112:5000/api/me", {
+                const res = await fetch("https://hacktube.fr/api/me", {
                     credentials: "include",
                 });
                 const data = await res.json();
@@ -27,7 +27,7 @@ const Header = ({ onSearch }) => {
                     if (data.user.profilePic) {
                         setProfilePic(
                             data.user.profilePic.startsWith("/uploads/")
-                                ? `http://192.168.1.112:5000${data.user.profilePic}`
+                                ? `https://hacktube.fr${data.user.profilePic}`
                                 : data.user.profilePic
                         );
                     } else {

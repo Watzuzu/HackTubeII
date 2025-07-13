@@ -12,7 +12,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const resMe = await fetch("http://192.168.1.112:5000/api/me", {
+        const resMe = await fetch("https://hacktube.fr/api/me", {
           credentials: "include",
         });
         const dataMe = await resMe.json();
@@ -22,17 +22,17 @@ const Dashboard = () => {
         }
         setIsAdmin(true);
 
-        const resUsers = await fetch("http://192.168.1.112:5000/api/admin/users", {
+        const resUsers = await fetch("https://hacktube.fr/api/admin/users", {
           credentials: "include",
         });
         setUsers(await resUsers.json());
 
-        const resLogs = await fetch("http://192.168.1.112:5000/api/admin/logs", {
+        const resLogs = await fetch("https://hacktube.fr/api/admin/logs", {
           credentials: "include",
         });
         setLogs(await resLogs.json());
 
-        const resUploads = await fetch("http://192.168.1.112:5000/api/admin/uploads", {
+        const resUploads = await fetch("https://hacktube.fr/api/admin/uploads", {
           credentials: "include",
         });
         setUploads(await resUploads.json());
@@ -60,6 +60,33 @@ const Dashboard = () => {
               <li key={i} className="mb-4 flex items-center gap-3">
                 <span className="font-mono">{u.email}</span>
                 {u.isAdmin && <span className="badge badge-success">Admin</span>}
+                {!u.isAdmin && (
+                  <button
+                    className="btn btn-xs btn-error ml-2 px-2 flex items-center justify-center"
+                    title="Supprimer le compte"
+                    onClick={async () => {
+                      if (window.confirm(`Voulez-vous vraiment supprimer le compte ${u.email} ? Cette action est irréversible.`)) {
+                        if (window.confirm("Confirmez la suppression définitive de ce compte.")) {
+                          const res = await fetch(`https://hacktube.fr/api/admin/user/${encodeURIComponent(u.email)}`, {
+                            method: "DELETE",
+                            credentials: "include"
+                          });
+                          const data = await res.json();
+                          if (data.success) {
+                            setUsers(users.filter(user => user.email !== u.email));
+                          } else {
+                            alert(data.message || "Erreur lors de la suppression.");
+                          }
+                        }
+                      }
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
+                      <line x1="4" y1="4" x2="12" y2="12" />
+                      <line x1="12" y1="4" x2="4" y2="12" />
+                    </svg>
+                  </button>
+                )}
               </li>
             ))}
           </ul>
@@ -87,13 +114,39 @@ const Dashboard = () => {
               <li key={i} className="mb-4 flex items-center gap-3">
                 <span className="font-semibold">{up.title}</span>
                 <a
-                  href={up.url.startsWith("/uploads/") ? `http://192.168.1.112:5000${up.url}` : up.url}
+                  href={up.url.startsWith("/uploads/") ? `https://hacktube.fr${up.url}` : up.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="link link-primary text-xs"
                 >
                   Voir
                 </a>
+                <button
+                  className="btn btn-xs btn-error ml-2 px-2 flex items-center justify-center"
+                  title="Supprimer"
+                  onClick={async () => {
+                    // Confirmation double pour éviter le miss clic
+                    if (window.confirm("Voulez-vous vraiment supprimer cette vidéo ? Cette action est irréversible.")) {
+                      if (window.confirm("Confirmez la suppression définitive de cette vidéo.")) {
+                        const res = await fetch(`https://hacktube.fr/api/admin/video/${up.id}`, {
+                          method: "DELETE",
+                          credentials: "include"
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                          setUploads(uploads.filter(v => v.id !== up.id));
+                        } else {
+                          alert(data.message || "Erreur lors de la suppression.");
+                        }
+                      }
+                    }
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
+                    <line x1="4" y1="4" x2="12" y2="12" />
+                    <line x1="12" y1="4" x2="4" y2="12" />
+                  </svg>
+                </button>
               </li>
             ))}
           </ul>
