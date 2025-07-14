@@ -8,6 +8,7 @@ import Account from './pages/account';
 import Login from './pages/login';
 import Settings from './pages/settings';
 import Dashboard from './pages/dashboard';
+import ConfirmEmail from './pages/ConfirmEmail';
 
 import './App.css';
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/account" element={<Account />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/confirm" element={<ConfirmEmail />} />
         </Routes>
       </>
     </Router>

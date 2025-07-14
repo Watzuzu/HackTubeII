@@ -33,7 +33,10 @@ const Login = () => {
         });
         const data = await res.json();
         setMsg(data.message);
-        if (data.success) setIsRegister(false);
+        if (data.success) {
+          setMsg("Compte créé ! Vérifiez vos mails pour confirmer votre adresse.");
+          setIsRegister(false);
+        }
       } catch {
         setMsg("Erreur réseau.");
       }

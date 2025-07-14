@@ -62,51 +62,68 @@ const Header = ({ onSearch }) => {
     };
 
     return (
-        <header>
-            <div className="navbar bg-base-300 shadow-sm">
-                <div className="flex-1">
-                    <Link to="/">
-                        <img src={logo} alt="Logo" className='w-28'/>
-                    </Link>
-                </div>
-                <div className="flex gap-2 ">
+        <header className="sticky top-0 z-50 w-full bg-base-100/80 backdrop-blur border-b border-base-300 shadow-sm animate-fade-in">
+            <nav className="flex items-center justify-between px-2 sm:px-6 py-2 gap-2">
+                {/* Logo */}
+                <Link to="/" className="flex items-center gap-2">
+                    <img src={logo} alt="Logo" className="w-10 sm:w-16 transition-transform duration-300 hover:scale-105" />
+                    <span className="hidden sm:inline text-xl font-bold text-primary tracking-tight">HackTube</span>
+                </Link>
+                {/* Barre de recherche */}
+                <div className="flex-1 flex justify-center mx-2">
                     <input
                         type="text"
-                        placeholder="Search"
-                        className="input input-bordered w-24 md:w-auto"
+                        placeholder="Rechercher..."
+                        className="input input-bordered w-full max-w-xs rounded-full bg-base-200 text-base focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                         value={search}
                         onChange={handleSearch}
                     />
+                </div>
+                {/* Actions à droite */}
+                <div className="flex items-center gap-2">
+                    {/* Thème */}
+                    <button
+                        className="btn btn-ghost btn-circle transition-all duration-200"
+                        aria-label="Changer le thème"
+                        onClick={handleThemeToggle}
+                    >
+                        {isDark ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400 animate-fade-in"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 animate-fade-in"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" /></svg>
+                        )}
+                    </button>
+                    {/* Profil / menu */}
                     <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                            <div className="w-10 rounded-full">
+                            <div className="w-10 rounded-full border border-base-300">
                                 <img
                                     alt="Photo de profil"
                                     src={profilePic}
-                                    className='bg-gray-300'
+                                    className="bg-gray-300 object-cover w-full h-full"
                                 />
                             </div>
                         </div>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                            className="menu menu-sm dropdown-content bg-base-100 rounded-xl z-10 mt-3 w-52 p-2 shadow animate-fade-in">
                             {isLogged && (
                                 <li>
                                     <Link to="/account" className="justify-between">
-                                        Profile
+                                        Profil
                                     </Link>
                                 </li>
                             )}
                             <li>
                                 <Link to="/settings" className="justify-between">
-                                    Settings
-                                    <span className="badge bg-base-300">Soon</span>
+                                    Paramètres
+                                    <span className="badge bg-base-300">Bientôt</span>
                                 </Link>
                             </li>
                             {!isLogged && (
                                 <li>
                                     <Link to="/login" className="justify-between">
-                                        Login
+                                        Connexion
                                     </Link>
                                 </li>
                             )}
@@ -121,48 +138,30 @@ const Header = ({ onSearch }) => {
                             {isAdmin && (
                                 <li>
                                     <Link to="/dashboard" className="justify-between">
-                                    Dashboard
-                                    <span className="badge badge-success">ADMIN</span>
+                                        Dashboard
+                                        <span className="badge badge-success">ADMIN</span>
                                     </Link>
                                 </li>
                             )}
                         </ul>
                     </div>
-                    <label className="flex cursor-pointer gap-2 items-center">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="5" />
-                            <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
-                        </svg>
-                        <input
-                            type="checkbox"
-                            className="toggle theme-controller"
-                            checked={isDark}
-                            onChange={handleThemeToggle}
-                        />
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </label>
                 </div>
-            </div>
+            </nav>
+            <style>{`
+                @keyframes fade-in {
+                  from { opacity: 0; transform: translateY(-10px);}
+                  to { opacity: 1; transform: translateY(0);}
+                }
+                .animate-fade-in { animation: fade-in 0.5s cubic-bezier(.4,0,.2,1) both; }
+                @keyframes gradient-move {
+                  0% { background-position: 0% 50%; }
+                  100% { background-position: 100% 50%; }
+                }
+                .animate-gradient-move {
+                  background-size: 200% 200%;
+                  animation: gradient-move 8s linear infinite alternate;
+                }
+            `}</style>
         </header>
     );
 };
